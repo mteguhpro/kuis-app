@@ -18,7 +18,6 @@
             </div>
             <div class="modal-body">
                 <form id="form-popup">
-                    <input type="hidden" id="id-data"> 
                     <div class="form-group">
                         <label for="pertanyaan">Pertanyaan:</label>
                         <textarea required class="form-control" placeholder="Pertanyaan" id="pertanyaan"></textarea>
@@ -53,24 +52,17 @@
     'use strict';
     
     // SETUP PAGE
-    var urlApi = SITEURLWEB + "administrator/master-group"
+    var urlApi = SITEURLWEB + "admin/master-soal"
     var tableTarget = $('#list-group');
     function dataPost(){
         return {
-                name: $('#name').val(),
-                code: $('#code').val(),
+                pertanyaan: $('#pertanyaan').val(),
             }
     }
     function siapkanInputSimpan(){
-        $('#id-data').val('')
-        $('#name').val('')
-        $('#code').val('')
+        $('#pertanyaan').val('')
     }
-    function siapkanInputEdit(row){
-        $('#id-data').val(row.id)
-        $('#name').val(row.name)
-        $('#code').val(row.code)
-    }
+
     var formPopup = new Pristine(document.getElementById("form-popup")); // create the pristine instance
     // END SETUP PAGE
 
@@ -91,10 +83,7 @@
         ],
         searchDelay: 1000,
         columns: [{
-                data: "name"
-            },
-            {
-                data: "code"
+                data: "pertanyaan"
             },
             {
                 data: "created_at"
@@ -107,7 +96,7 @@
                 searchable: false,
                 sortable: false,
                 render: function(data, type, row, meta) {
-                    return '<button class="btn btn-warning mx-1 edit"><i class="fas fa-cog"></i></button>' +
+                    return '<a href="<?= site_url('admin/master-soal/') ?>'+row.id+'/edit" class="btn btn-warning mx-1" data-placement="bottom" data-toggle="tooltip" title="Edit"><i class="fas fa-pen"></i></a>' +
                         '<button class="btn btn-danger mx-1 hapus"><i class="fas fa-trash"></i></button>'
                 }
             },
@@ -116,7 +105,6 @@
 
     $('#button-tambah').click(function() {
         $('#form-simpan').show()
-        $('#form-update').hide()
 
         siapkanInputSimpan()
 
@@ -163,60 +151,7 @@
 
                     tableListData.ajax.reload()
                     $('#formModal').modal('hide')
-                }
-            });
-        }
-
-    })
-
-    $('body').on('click', '.edit', function() {
-        $('#form-update').show()
-        $('#form-simpan').hide()
-
-        var row = tableListData.row( $(this).parents('tr') ).data();
-        siapkanInputEdit(row)
-        $('#judulFormModal').text('Edit Data')
-        $('#formModal').modal({
-            backdrop: 'static'
-        })
-    })
-    $('#form-update').click(function() {
-        var that = this
-        // check if the form is valid
-        if (formPopup.validate()) {
-            var data = dataPost()
-            $.ajax({
-                url: urlApi + "/" + $('#id-data').val(),
-                type: "POST",
-                beforeSend: function(xhr) {
-                    $(that).addClass('disabled')
-                },
-                complete: function(xhr, status) {
-                    $(that).removeClass('disabled')
-                },
-                error: function(xhr, status, err) {
-                    var res = JSON.parse(xhr.responseText)
-                    Toastify({
-                        text: res.message ? res.message : xhr.responseText,
-                        style: {
-                            background: "linear-gradient(to top, red, pink)",
-                        },
-                    }).showToast();
-                },
-                timeout: 5 * 60 * 1000,
-                data: data,
-                success: function(res, status, xhr) {
-                    Toastify({
-                        text: res.message,
-                        duration: -1,
-                        style: {
-                            background: "linear-gradient(to top, #00b09b, #96c93d)",
-                        },
-                        close: true,
-                    }).showToast();
-
-                    tableListData.ajax.reload()
-                    $('#formModal').modal('hide')
+                    window.location.href = urlApi +'/'+ res.id +'/edit'
                 }
             });
         }

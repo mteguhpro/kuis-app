@@ -37,7 +37,7 @@ class MasterSoal extends BaseController
         if(! $this->request->isAJAX()){
             return $this->html();
         }
-        $data = $this->model->listGroup($this->request->getGet());
+        $data = $this->model->listSoal($this->request->getGet());
         return $this->response->setJSON($data);
     }
 
@@ -64,28 +64,33 @@ class MasterSoal extends BaseController
         return $this->response->setStatusCode(400)->setJSON(['message' => 'Gagal simpan data']);
     }
 
-    // public function update($id = null){
-    //     $validation = \Config\Services::validation();
-    //     $validation->setRules([
-    //         'code' => "max_length[30]|min_length[2]|is_unique[group.code,id,{$id}]",
-    //         'name'  => "max_length[50]|min_length[2]|is_unique[group.name,id,{$id}]",
-    //     ]);
-    //     if (! $validation->withRequest($this->request)->run()) {
-    //         $errors = $validation->getErrors();
-    //         return $this->response->setStatusCode(400)->setJSON([
-    //                 'errors' => $errors,
-    //                 'message' => array_values($errors)[0],
-    //             ]);
-    //     }
-    //     $validData = $validation->getValidated();
-    //     if($this->model->where('id', $id)->set($validData)->update()){
-    //         return $this->response->setJSON([
-    //             'message' => 'Berhasil update data',
-    //             'id'=>$id
-    //         ]);
-    //     }
-    //     return $this->response->setStatusCode(400)->setJSON(['message' => 'Gagal update data']);
-    // }
+    public function update($id = null){
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'pertanyaan' => "required",
+        ]);
+        if (! $validation->withRequest($this->request)->run()) {
+            $errors = $validation->getErrors();
+            return $this->response->setStatusCode(400)->setJSON([
+                    'errors' => $errors,
+                    'message' => array_values($errors)[0],
+                ]);
+        }
+        $validData = $validation->getValidated();
+        if($this->model->where('id', $id)->set($validData)->update()){
+            return $this->response->setJSON([
+                'message' => 'Berhasil update data',
+                'id'=>$id
+            ]);
+        }
+        return $this->response->setStatusCode(400)->setJSON(['message' => 'Gagal update data']);
+    }
+
+    public function edit($id = null){
+        $this->toView['data'] = $this->model->where('id', $id)->withDeleted()->first();
+        return view('pages/kuis/edit_soal', esc($this->toView));
+    }
+
     public function delete($id){
         $this->model->delete($id);
 
