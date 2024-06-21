@@ -31,3 +31,12 @@ $routes->group('administrator', ['filter' => 'aksesFilter:root,administrator'], 
 
     $routes->post('master-user-ubah-password', 'Administrator\MasterUser::ubahPassword');
 });
+
+$routes->group('admin', ['filter' => 'aksesFilter:administrator'], static function ($routes) {
+    $routes->resource('master-soal', [
+        'websafe' => 1,
+        'controller' => 'Kuis\MasterSoal',
+        'except' => 'new',
+    ]);
+    
+});
