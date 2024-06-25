@@ -38,5 +38,11 @@ $routes->group('admin', ['filter' => 'aksesFilter:administrator'], static functi
         'controller' => 'Kuis\MasterSoal',
         'except' => 'new',
     ]);
-    
+
+    $routes->resource('master-jawaban', [
+        'websafe' => 1,
+        'controller' => 'Kuis\Jawaban',
+        'only' => 'create,delete',
+    ]);
+    $routes->get('/list-data-opsi', 'Kuis\Jawaban::listData');    
 });

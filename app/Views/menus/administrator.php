@@ -2,15 +2,15 @@
     <a href="#" class="nav-link">
         <i class="nav-icon fas fa-chart-pie"></i>
         <p>
-            Dashboard
+            Utama
             <i class="right fas fa-angle-left"></i>
         </p>
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="<?= site_url('dashboard/general') ?>" class="nav-link">
+            <a href="<?= site_url('admin/master-soal') ?>" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>General</p>
+                <p>Bank Soal</p>
             </a>
         </li>
     </ul>
