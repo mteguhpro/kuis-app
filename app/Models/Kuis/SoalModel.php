@@ -21,7 +21,8 @@ class SoalModel extends Model
     
     public function listSoal($dataGet){
         $builder = $this->db->table($this->table)
-            ->select('id, pertanyaan, gambar, created_at, updated_at, deleted_at');
+            ->select('id, pertanyaan, gambar, created_at, updated_at, deleted_at')
+            ->where('deleted_at', null);
 
         $datatable = new \App\Libraries\TegDatatable($builder, $dataGet);
         $datatable->searchable(['pertanyaan'])
