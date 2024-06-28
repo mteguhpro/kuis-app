@@ -76,4 +76,37 @@ class Jawaban extends BaseController
             'message' => 'Data Telah Dihapus',
         ]);
     }
+
+    public function tandaiBenar($id){
+        $data = $this->model->where('id', $id)->withDeleted()->first();
+        if(!$data){
+            return $this->response->setStatusCode(400)->setJSON(['message' => 'Data tidak ditemukan']);
+        }
+        $soalId = $data->soal_id;
+        $db = \Config\Database::connect();
+
+
+        $db->transStart();
+        $table1 = $db->table('jawaban');
+        $table2 = $db->table('jawaban');
+
+        $table1->set('is_true', false);
+        $table1->where('soal_id', $soalId);
+        $table1->where('is_true', true);
+        $table1->update();
+
+        $table2->set('is_true', true);
+        $table2->where('id', $id);
+        $table2->update();
+        
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->response->setStatusCode(400)->setJSON(['message' => 'Gagal update data']);
+        }
+
+        return $this->response->setJSON([
+            'message' => 'Berhasil update data',
+        ]);
+    }
 }

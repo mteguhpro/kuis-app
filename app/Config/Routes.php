@@ -44,5 +44,6 @@ $routes->group('admin', ['filter' => 'aksesFilter:administrator'], static functi
         'controller' => 'Kuis\Jawaban',
         'only' => 'create,delete',
     ]);
-    $routes->get('list-data-opsi/(:num)', 'Kuis\Jawaban::listData/$1');    
+    $routes->get('list-data-opsi/(:num)', 'Kuis\Jawaban::listData/$1');
+    $routes->post('tandai-jawaban-benar/(:num)', 'Kuis\Jawaban::tandaiBenar/$1');  
 });

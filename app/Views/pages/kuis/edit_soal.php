@@ -251,6 +251,51 @@
     $(document).off('click','.jawaban-benar').on('click','.jawaban-benar',function(){
         var that = this
         var id = $(that).data('jawaban-id')
+
+        Swal.fire({
+            title: 'Tandai Sebagai Jawaban Benar?',
+            text: "Opsi jawaban lain akan ditandai sebagai jawaban salah!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Lanjutkan!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: SITEURLWEB + "/admin/tandai-jawaban-benar/" + id,
+                    type: "POST",
+                    data: {},
+                    beforeSend: function(xhr) {
+                        $(that).addClass('disabled')
+                    },
+                    complete: function(xhr, status) {
+                        $(that).removeClass('disabled')
+                    },
+                    error: function(xhr, status, err) {
+                        var res = JSON.parse(xhr.responseText)
+                        Toastify({
+                            text: res.message ? res.message : xhr.responseText,
+                            style: {
+                                background: "linear-gradient(to top, red, pink)",
+                            },
+                        }).showToast();
+                    },
+                    timeout: 5 * 60 * 1000,
+                    success: function(res, status, xhr) {
+                        Toastify({
+                            text: res.message,
+                            duration: -1,
+                            style: {
+                                background: "linear-gradient(to top, #00b09b, #96c93d)",
+                            },
+                            close: true,
+                        }).showToast();
+                        drawListJawaban();
+                    }
+                });
+            }
+        })
     });
 </script>
 
