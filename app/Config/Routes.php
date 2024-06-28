@@ -44,5 +44,5 @@ $routes->group('admin', ['filter' => 'aksesFilter:administrator'], static functi
         'controller' => 'Kuis\Jawaban',
         'only' => 'create,delete',
     ]);
-    $routes->get('/list-data-opsi', 'Kuis\Jawaban::listData');    
+    $routes->get('list-data-opsi/(:num)', 'Kuis\Jawaban::listData/$1');    
 });

@@ -11,6 +11,11 @@
         </div>
     </form>
 
+    <h3>Opsi Jawaban</h3>
+    <div id="list-opsi-jawaban" class="row">
+        
+    </div>
+
     <button type="button" id="open-form-opsi" class="btn btn-secondary" data-toggle="modal" data-target="#modalTambahJawaban">Tambah Opsi Jawaban</button>
     <button type="button" id="form-simpan" class="btn btn-primary">Save changes</button>
 
@@ -62,6 +67,47 @@
         width: '100%',
         theme: "classic",
     })
+
+    function drawListJawaban(){
+        var area = $('#list-opsi-jawaban')
+        $.ajax({
+            url: SITEURLWEB + "admin/list-data-opsi/" + $('#id_data').val(),
+            type: "GET",
+            beforeSend: function(xhr) {
+                area.text('loading...')
+            },
+            // complete: function(xhr, status) {
+            // },
+            error: function(xhr, status, err) {
+                area.text('error...')
+                var res = JSON.parse(xhr.responseText)
+                Toastify({
+                    text: res.message ? res.message : xhr.responseText,
+                    style: {
+                        background: "linear-gradient(to top, red, pink)",
+                    },
+                }).showToast();
+            },
+            timeout: 5 * 60 * 1000,
+            data: {},
+            success: function(res, status, xhr) {
+                var html = ''
+                res.message.forEach(function(data){
+                    html += '<div class="col-md-6 col-lg-4">'+ 
+                                '<div class="card '+(data.is_true === '1' ? 'bg-success' : '') + '">'+
+                                    '<div class="card-body">'+
+                                        '<p class="m-1 card-text">'+data.keterangan+'</p>'+
+                                        '<button data-jawaban-id="'+data.id+'" class="hapus-jawaban m-1 btn btn-danger">Hapus</button>'+
+                                        (data.is_true === '0' ? '<button data-jawaban-id="'+data.id+'" class="jawaban-benar btn btn-success">Jadikan Jawaban Benar</button>' : '') +
+                                    '</div>'+
+                                '</div>'+
+                            '</div>'
+                        })
+                        area.html(html)
+            }
+        });
+    }
+    drawListJawaban()
 
     var formData = new Pristine(document.getElementById("form-data"));
     $('#form-simpan').click(function() {
@@ -146,9 +192,66 @@
                     },
                     close: true,
                 }).showToast();
+                drawListJawaban();
+                $('#modalTambahJawaban').modal('hide')
             }
         });
     })
+
+    $(document).off('click','.hapus-jawaban').on('click','.hapus-jawaban',function(){
+        var that = this
+        var id = $(that).data('jawaban-id')
+
+        Swal.fire({
+            title: 'Hapus Data?',
+            text: "Data yang dihapus tidak akan dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: SITEURLWEB + "/admin/master-jawaban/" + id + "/delete",
+                    type: "POST",
+                    data: {},
+                    beforeSend: function(xhr) {
+                        $(that).addClass('disabled')
+                    },
+                    complete: function(xhr, status) {
+                        $(that).removeClass('disabled')
+                    },
+                    error: function(xhr, status, err) {
+                        var res = JSON.parse(xhr.responseText)
+                        Toastify({
+                            text: res.message ? res.message : xhr.responseText,
+                            style: {
+                                background: "linear-gradient(to top, red, pink)",
+                            },
+                        }).showToast();
+                    },
+                    timeout: 5 * 60 * 1000,
+                    success: function(res, status, xhr) {
+                        Toastify({
+                            text: res.message,
+                            duration: -1,
+                            style: {
+                                background: "linear-gradient(to top, #00b09b, #96c93d)",
+                            },
+                            close: true,
+                        }).showToast();
+                        drawListJawaban();
+                    }
+                });
+            }
+        })
+    });
+
+    $(document).off('click','.jawaban-benar').on('click','.jawaban-benar',function(){
+        var that = this
+        var id = $(that).data('jawaban-id')
+    });
 </script>
 
 <?= $this->endSection(); ?>

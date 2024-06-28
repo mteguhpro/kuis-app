@@ -24,8 +24,11 @@ class Jawaban extends BaseController
         $this->model = new \App\Models\Kuis\JawabanModel();
     }
 
-    public function listData(){
-
+    public function listData($id){
+        $data = $this->model->where('soal_id', $id)->get();
+        return $this->response->setJSON([
+            'message' => $data->getResult(),
+        ]);
     }
 
 
