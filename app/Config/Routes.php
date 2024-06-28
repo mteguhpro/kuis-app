@@ -9,7 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 
 
 
-$routes->addRedirect('/', '/welcome');
+$routes->addRedirect('/', '/play');
 //Standar simpel
 $routes->get('/auth', 'Auth::index'); //form-login
 $routes->post('/auth/create', 'Auth::create'); //login
@@ -47,3 +47,9 @@ $routes->group('admin', ['filter' => 'aksesFilter:administrator'], static functi
     $routes->get('list-data-opsi/(:num)', 'Kuis\Jawaban::listData/$1');
     $routes->post('tandai-jawaban-benar/(:num)', 'Kuis\Jawaban::tandaiBenar/$1');  
 });
+
+$routes->get('/play', 'Kuis\Exam::play'); //form-login
+$routes->post('/play/soal', 'Kuis\Exam::soal');
+$routes->post('/play/hasil', 'Kuis\Exam::hasil');
+$routes->get('/play/list-id-soal', 'Kuis\Exam::listIdSoal');
+

@@ -164,7 +164,7 @@
             jawaban_benar: $('#jawaban-benar').val(),
         }
         $.ajax({
-            url: SITEURLWEB + "admin/master-jawaban/",
+            url: SITEURLWEB + "admin/master-jawaban",
             type: "POST",
             beforeSend: function(xhr) {
                 $(that).addClass('disabled')
