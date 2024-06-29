@@ -184,7 +184,7 @@
 
         function soalBaru(){
             $.ajax({
-                url: SITEURLWEB + "/play/soal/",
+                url: SITEURLWEB + "/play/soal",
                 type: "POST",
                 data: {
                     'list-soal-tampil' : listSoalTampil
@@ -229,7 +229,7 @@
             }
 
             $.ajax({
-                url: SITEURLWEB + "/play/hasil/",
+                url: SITEURLWEB + "/play/hasil",
                 type: "POST",
                 data: {
                     'jawaban-terpilih' : jawabanTerpilih
